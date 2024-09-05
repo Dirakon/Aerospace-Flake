@@ -12,17 +12,23 @@
         {
           system = "aarch64-darwin";
         };
+      let version = "v0.14.2-Beta"; in
       stdenv.mkDerivation {
         name = "aerospace";
-        version = "0.9.0-Beta";
+        version = version;
         src = fetchzip {
-          url = "https://github.com/nikitabobko/AeroSpace/releases/download/v0.9.0-Beta/AeroSpace-v0.9.0-Beta.zip";
-          hash = "sha256-UVNMjKPMUDuSKPMtLLBb3Lqu5Xocp9X99i+tPjktdbA=";
+          url = "https://github.com/nikitabobko/AeroSpace/releases/download/${version}/AeroSpace-${version}.zip";
+          hash = "sha256-v2D/IV9Va0zbGHEwSGt6jvDqQYqha290Lm6u+nZTS3A=";
         };
 
         unpackPhase = ''
-          ls -lah $src/
-          cp -r $src/ $out/
+          # Put .app file in a separate folder, so that home-manager properly registers it:
+          # see https://github.com/nix-community/home-manager/blob/3d65009effd77cb0d6e7520b68b039836a7606cf/modules/targets/darwin/linkapps.nix
+          mkdir -p $out/Applications/
+          cp -r $src/AeroSpace.app $out/Applications/AeroSpace.app
+
+          # Copy the rest of the files
+          cp -r -u  $src/* $out/
         '';
       };
 
